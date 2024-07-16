@@ -36,7 +36,6 @@ export default function CardBook({book_name, author, image, url, onPress, style}
 
 const styles = StyleSheet.create({
     cardBookContainer: {
-        flex: 1,
         backgroundColor: '#fff',
     },
     bookImage: {
