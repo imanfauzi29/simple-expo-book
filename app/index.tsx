@@ -7,7 +7,6 @@ import ScrollableCategory from "@/components/ScrollableCategory";
 import {books} from "@/data/Books";
 import {offers} from "@/data/Offers";
 import Offers from "@/components/Offers";
-import {DirectLink} from "@/helpers/util";
 import useWidthCol from "@/hooks/useWidthCol";
 
 export default function Main() {
@@ -52,7 +51,7 @@ export default function Main() {
                                 keyExtractor={(_, index) => `#${index.toString()}`}
                                 renderItem={
                                     ({item}) => (
-                                        <CardBook onPress={DirectLink} style={{width: 200}} {...item} />
+                                        <CardBook style={{width: 200}} {...item} />
                                     )
                                 }/>
                         </View>
@@ -72,7 +71,7 @@ export default function Main() {
                                 renderItem={
                                     ({item, index}) => (
                                         <CardBook
-                                            onPress={DirectLink}
+
                                             style={[books.length === index + 1 ? {width: cardWidth} : {flex: 1}]}
                                             {...item} />
                                     )
