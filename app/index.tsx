@@ -8,9 +8,26 @@ import {books} from "@/data/Books";
 import {offers} from "@/data/Offers";
 import Offers from "@/components/Offers";
 import useWidthCol from "@/hooks/useWidthCol";
+import {useEffect} from "react";
+import {getRecentBooks} from "@/services/books/booksApi";
+import useBookStore from "@/store/useBookStore";
 
 export default function Main() {
     const {columns, cardWidth} = useWidthCol(2)
+    const {setBooks} = useBookStore(store => store)
+
+    useEffect(() => {
+        getBooks()
+    }, []);
+
+    const getBooks = async () => {
+        try {
+            const recentBook = await getRecentBooks()
+            console.log(recentBook)
+        } catch (err) {
+            console.log(err)
+        }
+    }
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
