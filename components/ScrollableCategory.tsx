@@ -1,6 +1,8 @@
 import {FlatList, StyleSheet, TouchableWithoutFeedback, View} from "react-native";
 import {ThemedText} from "@/components/ThemedText";
 import {useState} from "react";
+import useBookStore from "@/store/useBookStore";
+import {RecentBooksType} from "@/services/books/types";
 
 const categories = [
     {
@@ -22,7 +24,30 @@ const categories = [
 ]
 
 export default function ScrollableCategory() {
+    const {recentBooks, setMainBooks} = useBookStore(state => state)
     const [currentCategories, setCurrentCategories] = useState("popular")
+
+    const filterBooks = (categories: string) => {
+        setCurrentCategories(categories)
+
+        switch (categories) {
+            case "latest":
+                setMainBooks(filterLatest(recentBooks))
+                break;
+            case "best-seller":
+                setMainBooks(filterBestSeller(recentBooks))
+                break;
+            case "upcomming":
+                setMainBooks(filterUpcomming(recentBooks))
+                break;
+            default:
+                setMainBooks(recentBooks)
+        }
+    }
+
+    const filterLatest = (books: RecentBooksType[]) => books.sort(() => Math.random() - 0.5)
+    const filterBestSeller = (books: RecentBooksType[]) => books.sort(() => Math.random() - 1.5)
+    const filterUpcomming = (books: RecentBooksType[]) => books.sort(() => Math.random() - 2)
 
     return (
         <FlatList
@@ -35,7 +60,7 @@ export default function ScrollableCategory() {
                 ({item: category}) => (
                     <TouchableWithoutFeedback
                         key={category.id}
-                        onPress={() => setCurrentCategories(category.id)}>
+                        onPress={() => filterBooks(category.id)}>
                         <View style={styles.categoryContainer}>
                             <ThemedText
                                 type={"default"}

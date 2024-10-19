@@ -4,7 +4,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import {ThemedText} from "@/components/ThemedText";
 import CardBook from "@/components/CardBook";
 import ScrollableCategory from "@/components/ScrollableCategory";
-import {books} from "@/data/Books";
 import {offers} from "@/data/Offers";
 import Offers from "@/components/Offers";
 import useWidthCol from "@/hooks/useWidthCol";
@@ -14,7 +13,7 @@ import useBookStore from "@/store/useBookStore";
 
 export default function Main() {
     const {columns, cardWidth} = useWidthCol(2)
-    const {setBooks} = useBookStore(store => store)
+    const {mainBooks, continueReading, setBooks, setMainBooks} = useBookStore(store => store)
 
     useEffect(() => {
         getBooks()
@@ -23,7 +22,8 @@ export default function Main() {
     const getBooks = async () => {
         try {
             const recentBook = await getRecentBooks()
-            console.log(recentBook)
+            setBooks(recentBook.books)
+            setMainBooks(recentBook.books)
         } catch (err) {
             console.log(err)
         }
@@ -51,27 +51,27 @@ export default function Main() {
                         <ScrollView horizontal>
                             {offers.map((offer, i) => (
                                 <Offers key={i} {...offer} />
-
                             ))}
                         </ScrollView>
-
-                        <View>
-                            <ThemedText type={"defaultSemiBold"} style={{marginBottom: 14, fontSize: 18}}>
-                                Continue Reading
-                            </ThemedText>
-                            <FlatList
-                                key={"#"}
-                                data={books}
-                                horizontal
-                                contentContainerStyle={{justifyContent: 'center', gap: 12}}
-                                showsHorizontalScrollIndicator={false}
-                                keyExtractor={(_, index) => `#${index.toString()}`}
-                                renderItem={
-                                    ({item}) => (
-                                        <CardBook style={{width: 200}} {...item} />
-                                    )
-                                }/>
-                        </View>
+                        {!!continueReading.length && (
+                            <View>
+                                <ThemedText type={"defaultSemiBold"} style={{marginBottom: 14, fontSize: 18}}>
+                                    Continue Reading
+                                </ThemedText>
+                                <FlatList
+                                    key={"#"}
+                                    data={continueReading}
+                                    horizontal
+                                    contentContainerStyle={{justifyContent: 'center', gap: 12}}
+                                    showsHorizontalScrollIndicator={false}
+                                    keyExtractor={(_, index) => `#${index.toString()}`}
+                                    renderItem={
+                                        ({item}) => (
+                                            <CardBook style={{width: 200}} {...item} />
+                                        )
+                                    }/>
+                            </View>
+                        )}
 
                         <View style={{marginBottom: 30}}>
                             <ScrollableCategory/>
@@ -79,7 +79,7 @@ export default function Main() {
                         <View>
                             <FlatList
                                 key={"#"}
-                                data={books}
+                                data={mainBooks}
                                 scrollEnabled={false}
                                 numColumns={columns}
                                 contentContainerStyle={{gap: 32}}
@@ -88,8 +88,7 @@ export default function Main() {
                                 renderItem={
                                     ({item, index}) => (
                                         <CardBook
-
-                                            style={[books.length === index + 1 ? {width: cardWidth} : {flex: 1}]}
+                                            style={[mainBooks.length === index + 1 ? {width: cardWidth} : {flex: 1}]}
                                             {...item} />
                                     )
                                 }/>
